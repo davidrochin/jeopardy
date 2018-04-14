@@ -6,12 +6,17 @@ using UnityEngine;
 public class PlayManager : MonoBehaviour {
 
     Question[] questions;
-    BoardBuilder gridBuilder;
+    Board board;
 
 	void Awake () {
         //StreamReader reader = new StreamReader("Assets/preguntas.csv", System.Text.Encoding.UTF8, true);
         questions = Question.FromCSV();
-        gridBuilder = FindObjectOfType<BoardBuilder>();
-	}
-	
+        board = FindObjectOfType<Board>();
+    }
+
+    void Start() {
+        //board.cells[5, 0].SetActive(false);
+    }
+
 }
+

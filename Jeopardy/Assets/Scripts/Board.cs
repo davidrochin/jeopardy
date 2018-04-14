@@ -2,47 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-public class BoardBuilder : MonoBehaviour {
+public class Board : MonoBehaviour {
 
     [Header("Board")]
     public Vector2 boardSize;
     public Color backgroundColor;
 
     [Header("Cells")]
+    public int rows = 6; public int cols = 6;
     public Color cellColor;
     public float cellMargin;
 
-	void Start () {
+    public GameObject background;
+    public GameObject[,] cells;
+    public Question[] questions;
+
+	void Awake () {
         Build();
 	}
 
     public void Build() {
 
-        //Crear el objeto principal
-        GameObject board = new GameObject("Board"); board.transform.position = transform.position;
-
         //Crear el fondo
-        GameObject background = new GameObject("Background");
-        background.transform.parent = board.transform;
+        background = new GameObject("Background");
+        background.transform.position = transform.position;
+        background.transform.parent = transform;
         SpriteRenderer backgroundSpriteRenderer = background.AddComponent<SpriteRenderer>();
         backgroundSpriteRenderer.sprite = Resources.Load<Sprite>("default");
         background.transform.localScale = boardSize;
         backgroundSpriteRenderer.color = backgroundColor;
+        backgroundSpriteRenderer.sortingOrder = -2;
 
         //Crear las celdas
         Vector2 cellSize = new Vector2(boardSize.x / 6f, boardSize.y / 6f);
         Vector2 firstPos = transform.position + Vector3.up * (boardSize.y / 2f) + Vector3.left * (boardSize.x / 2f) + Vector3.down * (cellSize.y / 2f) + Vector3.right * (cellSize.x / 2f);
+        cells = new GameObject[cols, rows];
+
         for (int x = 0; x < 6; x++) {
             for (int y = 0; y < 6; y++) {
                 GameObject cell = new GameObject("Celda " + (x + 1) + " - " + (y + 1));
                 cell.transform.position = firstPos + Vector2.right * cellSize.x * x + Vector2.down * cellSize.y * y;
-                cell.transform.parent = board.transform;
+                cell.transform.parent = transform;
                 SpriteRenderer cellSpriteRenderer = cell.AddComponent<SpriteRenderer>();
                 cellSpriteRenderer.sprite = Resources.Load<Sprite>("default");
                 cellSpriteRenderer.color = cellColor;
-                cellSpriteRenderer.sortingOrder = 1;
-                cell.transform.localScale = new Vector2(cellSize.x - cellMargin * 2f, cellSize.y - cellMargin * 2f);
+                cellSpriteRenderer.sortingOrder = -1;
+                cell.transform.localScale = new Vector3(cellSize.x - cellMargin * 2f, cellSize.y - cellMargin * 2f, 1f);
+
+                cell.AddComponent<Cell>();
+
+                //Registrar la celda en el array de celdas
+                cells[x, y] = cell;
             }
         }
     }
