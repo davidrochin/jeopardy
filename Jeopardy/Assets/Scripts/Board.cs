@@ -17,11 +17,40 @@ public class Board : MonoBehaviour {
 
     public GameObject background;
     public GameObject[,] cells;
-    public Question[] questions;
+    public QuestionCollection questionCollection;
 
 	void Awake () {
         Build();
 	}
+
+    public void Populate(Question[] questions, string[] categories) {
+
+        //Iniciar la coleccion de preguntas
+        questionCollection = new QuestionCollection(questions);
+
+        //Popular los encabezados
+        for (int x = 0; x < cols; x++) {
+            Cell cell = cells[x, 0].GetComponent<Cell>();
+            cell.type = Cell.Type.Header;
+            cell.textMesh.text = categories[x];
+            //cell.textMesh.font = Resources.Load("Fonts & Materials/LiberationSans SDF") as TMP_FontAsset;
+            cell.textMesh.font = Resources.Load("Fonts & Materials/Impact SDF") as TMP_FontAsset;
+            cell.textMesh.color = Color.white;
+            cell.textMesh.fontSizeMax = 4f;
+            //cell.textMesh.enableAutoSizing = false;
+            //cell.textMesh.fontSize = 4f;
+            //cell.textMesh.fontStyle = FontStyles.Bold;
+        }
+
+        //Popular las celdas de preguntas
+        for (int x = 0; x < cols; x++) {
+            for (int y = 1; y < rows; y++) {
+                Question question = questionCollection.RandomWithValueAndCategory(y * 200, (Question.Category) x);
+                cells[x, y].GetComponent<Cell>().SetQuestion(question);
+                Debug.Log(question);
+            }
+        }
+    }
 
     public void Build() {
 
@@ -51,7 +80,11 @@ public class Board : MonoBehaviour {
                 cellSpriteRenderer.sortingOrder = -1;
                 cell.transform.localScale = new Vector3(cellSize.x - cellMargin * 2f, cellSize.y - cellMargin * 2f, 1f);
 
-                cell.AddComponent<Cell>();
+                //Si es un encabezado, hacerla un poco menos alta
+                if (y == 0) { cell.transform.localScale = new Vector3(cell.transform.localScale.x, cell.transform.localScale.y - cellMargin * 2f, 1f); } 
+
+                Cell cellComponent = cell.AddComponent<Cell>();
+                if(y == 0) { cellComponent.type = Cell.Type.Header; }
 
                 //Registrar la celda en el array de celdas
                 cells[x, y] = cell;

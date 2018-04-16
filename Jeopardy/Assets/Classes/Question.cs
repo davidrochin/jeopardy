@@ -2,24 +2,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+[System.Serializable]
 public class Question {
 
     public string text;
     public string answer;
 
-    public int points;
+    public int value;
     public Category category;
 
     public Question(string questionText, string answer, int points, Category category) {
         this.text = questionText;
         this.answer = answer;
-        this.points = points;
+        this.value = points;
         this.category = category;
     }
 
     public override string ToString() {
-        return "Pregunta: " + text + ", Respuesta: " + answer + ", Valor: " + points + ", Categoría: " + category.ToString();
+        return "Pregunta: " + text + ", Respuesta: " + answer + ", Valor: " + value + ", Categoría: " + category.ToString();
+    }
+
+    public void Show() {
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        if(canvas == null) { canvas = new GameObject("Canvas").AddComponent<Canvas>(); }
+
+        GameObject panel = Resources.Load("question_panel") as GameObject;
+        panel = GameObject.Instantiate(panel, canvas.transform, false);
+
+        panel.transform.Find("question_text").GetComponent<Text>().text = text;
+
+        //Agregar el componente que muestra la respuesta
+        AnswerShower answerShower = panel.AddComponent<AnswerShower>();
+        answerShower.question = this;
+
     }
 
     public static Question[] FromCSV() {
