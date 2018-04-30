@@ -17,6 +17,7 @@ public class QuestionCollection {
 
     public Question RandomWithValueAndCategory(int value, Question.Category category) {
         Question[] results = questions.FindAll(x => x.value == value && x.category == category).ToArray();
+        Debug.Log(value + ", " + category + ", " + results.Length);
         return results[Random.Range(0, results.Length - 1)];
     }
 

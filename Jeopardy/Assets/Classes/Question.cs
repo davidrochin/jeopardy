@@ -11,13 +11,19 @@ public class Question {
     public string answer;
 
     public int value;
-    public Category category;
 
-    public Question(string questionText, string answer, int points, Category category) {
+    public Category category;
+    public int level;
+
+    public string[] options;
+
+    public Question(string questionText, string answer, int value, Category category, int level, string[] options) {
         this.text = questionText;
         this.answer = answer;
-        this.value = points;
+        this.value = value;
         this.category = category;
+        this.level = level;
+        this.options = options;
     }
 
     public override string ToString() {
@@ -34,7 +40,7 @@ public class Question {
         panel.transform.Find("question_text").GetComponent<Text>().text = text;
 
         //Agregar el componente que muestra la respuesta
-        AnswerShower answerShower = panel.AddComponent<AnswerShower>();
+        AnswerManager answerShower = panel.AddComponent<AnswerManager>();
         answerShower.question = this;
 
     }
@@ -44,7 +50,7 @@ public class Question {
         TextAsset textAsset = (TextAsset) Resources.Load("preguntas");
 
         CSVReader.LoadFromString(textAsset.text, delegate(int index, List<string> line) {
-            Question q = new Question(line[2], line[3], int.Parse(line[1]), (Category)int.Parse(line[0]) - 1);
+            Question q = new Question(line[3], line[5], int.Parse(line[2]), (Category)int.Parse(line[0]) - 1, int.Parse(line[1]), line[4].Split(';'));
             //Debug.Log(q);
             questions.Add(q);
         });

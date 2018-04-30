@@ -47,7 +47,7 @@ public class Board : MonoBehaviour {
             for (int y = 1; y < rows; y++) {
                 Question question = questionCollection.RandomWithValueAndCategory(y * 200, (Question.Category) x);
                 cells[x, y].GetComponent<Cell>().SetQuestion(question);
-                Debug.Log(question);
+                //Debug.Log(question);
             }
         }
     }
@@ -65,12 +65,12 @@ public class Board : MonoBehaviour {
         backgroundSpriteRenderer.sortingOrder = -2;
 
         //Crear las celdas
-        Vector2 cellSize = new Vector2(boardSize.x / 6f, boardSize.y / 6f);
+        Vector2 cellSize = new Vector2(boardSize.x / cols, boardSize.y / rows);
         Vector2 firstPos = transform.position + Vector3.up * (boardSize.y / 2f) + Vector3.left * (boardSize.x / 2f) + Vector3.down * (cellSize.y / 2f) + Vector3.right * (cellSize.x / 2f);
         cells = new GameObject[cols, rows];
 
-        for (int x = 0; x < 6; x++) {
-            for (int y = 0; y < 6; y++) {
+        for (int x = 0; x < cols; x++) {
+            for (int y = 0; y < rows; y++) {
                 GameObject cell = new GameObject("Celda " + (x + 1) + " - " + (y + 1));
                 cell.transform.position = firstPos + Vector2.right * cellSize.x * x + Vector2.down * cellSize.y * y;
                 cell.transform.parent = transform;
@@ -99,7 +99,6 @@ public class Board : MonoBehaviour {
         Gizmos.DrawWireCube(transform.position, boardSize);
 
         //Dibujar lineas para ver como quedaran las celdas
-        int cols = 6; int rows = 6;
         float colWidth = boardSize.x / cols;
         float rowHeight = boardSize.y / rows;
 

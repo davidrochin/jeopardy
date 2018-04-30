@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 public class Cell : MonoBehaviour {
 
     public Type type = Type.Question;
-    public bool activeCell = true;
+    bool cellActive = true;
     public TextMeshPro textMesh;
-    Question question;
+    public Question question;
 
     Collider2D collider;
 
@@ -42,23 +42,23 @@ public class Cell : MonoBehaviour {
     }
 
     private void OnMouseUpAsButton() {
-        if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false) {
+        QuestionPanel questionPanel = FindObjectOfType<QuestionPanel>();
+        if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false && cellActive && questionPanel == null) {
             question.Show();
             //Debug.LogWarning("Click");
         }
     }
 
     private void OnMouseOver() {
+
         if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false) {
 
             //Si le hacen clic derecho a la celda
             if (Input.GetMouseButtonDown(1)) {
-                if (activeCell) {
-                    activeCell = false;
-                    textMesh.enabled = false;
+                if (cellActive) {
+                    SetActive(false);
                 } else {
-                    activeCell = true;
-                    textMesh.enabled = true;
+                    SetActive(true);
                 }
             }
         }
@@ -66,7 +66,16 @@ public class Cell : MonoBehaviour {
 
     public void SetQuestion(Question question) {
         this.question = question;
-        textMesh.text = "$" + this.question.value;
+        textMesh.text = "" + this.question.value;
+    }
+
+    public void SetActive(bool active) {
+        cellActive = active;
+        if (cellActive) {
+            textMesh.enabled = true;
+        } else {
+            textMesh.enabled = false;
+        }
     }
 
     public enum Type { Header, Question }
