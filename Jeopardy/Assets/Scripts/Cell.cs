@@ -35,11 +35,6 @@ public class Cell : MonoBehaviour {
         //Agregarle un collider para poder detectar clicks
         collider = gameObject.AddComponent<BoxCollider2D>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-    }
 
     private void OnMouseUpAsButton() {
         QuestionPanel questionPanel = FindObjectOfType<QuestionPanel>();

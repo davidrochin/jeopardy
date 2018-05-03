@@ -15,10 +15,29 @@ public class AnswerManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //Si se presiona la tecla R, mostrar la respuesta
         if (Input.GetKeyDown(KeyCode.R)) {
             GameObject textObject = transform.Find("question_text").gameObject;
             textObject.GetComponent<Text>().text = question.answer;
             GetComponent<Image>().color = new Color32(165, 28, 28, 255);
+        }
+
+        //Si se presiona la tecla O, mostrar las opciones
+        if (Input.GetKeyDown(KeyCode.O) && question.options.Length > 1) {
+            GameObject textObject = transform.Find("question_text").gameObject;
+
+            string optionsText = question.options[0];
+            for (int i = 1; i < question.options.Length; i++) {
+                optionsText += "\n" + question.options[i];
+            }
+            textObject.GetComponent<Text>().text = optionsText;
+            GetComponent<Image>().color = new Color32(61, 168, 34, 255);
+        }
+
+        //Si se presiona la tecla P, volver a mostrar la pregunta
+        if (Input.GetKeyDown(KeyCode.P)) {
+            question.Show();
+            Destroy(this.gameObject);
         }
 
         bool answered = false;

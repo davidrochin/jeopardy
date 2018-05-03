@@ -50,7 +50,7 @@ public class Question {
         TextAsset textAsset = (TextAsset) Resources.Load("preguntas");
 
         CSVReader.LoadFromString(textAsset.text, delegate(int index, List<string> line) {
-            Question q = new Question(line[3], line[5], int.Parse(line[2]), (Category)int.Parse(line[0]) - 1, int.Parse(line[1]), line[4].Split(';'));
+            Question q = new Question(line[3], line[5], int.Parse(line[2]), (Category)int.Parse(line[0]) - 1, int.Parse(line[1]), line[4].Split(';').Length > 1 ? line[4].Split(';') : new string[0]);
             //Debug.Log(q);
             questions.Add(q);
         });

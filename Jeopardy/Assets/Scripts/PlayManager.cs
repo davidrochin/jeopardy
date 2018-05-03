@@ -7,7 +7,7 @@ public class PlayManager : MonoBehaviour {
 
     public static PlayManager instance;
 
-    Question[] questions;
+    public Question[] questions;
     string[] categories = { "Anatomía", "Otra categoría", "Otra categoría más", "Categoría", "Penúltima categoría" };
     Board board;
 
