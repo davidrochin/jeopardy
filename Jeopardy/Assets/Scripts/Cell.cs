@@ -4,12 +4,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[SelectionBase]
 public class Cell : MonoBehaviour {
 
     public Type type = Type.Question;
     bool cellActive = true;
     public TextMeshPro textMesh;
-    public Question question;
+    public Question[] questions;
 
     Collider2D collider;
 
@@ -39,8 +40,15 @@ public class Cell : MonoBehaviour {
     private void OnMouseUpAsButton() {
         QuestionPanel questionPanel = FindObjectOfType<QuestionPanel>();
         if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false && cellActive && questionPanel == null) {
-            question.Show();
-            //Debug.LogWarning("Click");
+            if(GetActiveQuestions().Length > 0) {
+
+                //Si solo queda una pregunta activa, abrirla directamente en lugar de abrir el selector
+                if (GetActiveQuestions().Length == 1) {
+                    GetActiveQuestions()[0].Show();
+                } else {
+                    QuestionSelector.Create(questions);
+                }
+            }
         }
     }
 
@@ -59,9 +67,9 @@ public class Cell : MonoBehaviour {
         }
     }
 
-    public void SetQuestion(Question question) {
-        this.question = question;
-        textMesh.text = "" + this.question.value;
+    public void SetQuestions(Question[] questions) {
+        this.questions = questions;
+        textMesh.text = "" + this.questions[0].value;
     }
 
     public void SetActive(bool active) {
@@ -71,6 +79,36 @@ public class Cell : MonoBehaviour {
         } else {
             textMesh.enabled = false;
         }
+    }
+
+    public bool ContainsQuestion(Question question) {
+        if (questions == null) return false;
+        foreach (Question current in questions) {
+            if(current == question) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool HasActiveQuestions() {
+        if(type == Type.Question) {
+            foreach (Question question in questions) {
+                if (question.active) { return true; }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public Question[] GetActiveQuestions() {
+        List<Question> results = new List<Question>();
+        foreach (Question question in questions) {
+            if (question.active) {
+                results.Add(question);
+            }
+        }
+        return results.ToArray();
     }
 
     public enum Type { Header, Question }

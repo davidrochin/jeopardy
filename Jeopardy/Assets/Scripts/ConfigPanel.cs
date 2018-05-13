@@ -18,6 +18,9 @@ public class ConfigPanel : MonoBehaviour {
     Button button_close;
     Button button_ok;
 
+    //Eventos
+    public static Action OnConfigUpdate;
+
     void Awake() {
 
         Transform contentTransform = transform.Find("layout_content");
@@ -64,7 +67,12 @@ public class ConfigPanel : MonoBehaviour {
 
         //Si no hay errores, aplicar la configuración
         if (!thereIsError) {
+
+            //Repopular las celdas que quedan con las preguntas del nuevo nivel
+            FindObjectOfType<Board>().PopulateRemaining(PlayManager.instance.level);
+
             Debug.Log("Se aplicó la configuración: " + PlayManager.instance.teamA.name + ", " + PlayManager.instance.teamB.name + ", nivel " + PlayManager.instance.level);
+            if(OnConfigUpdate != null) OnConfigUpdate();
             Close();
         }
 
@@ -80,4 +88,6 @@ public class ConfigPanel : MonoBehaviour {
             return instance;
         }
     }
+
+    public delegate void Action();
 }

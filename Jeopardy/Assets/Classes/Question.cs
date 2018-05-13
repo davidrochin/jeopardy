@@ -12,12 +12,14 @@ public class Question {
 
     public int value;
 
-    public Category category;
+    public int category;
     public int level;
+
+    public bool active = true;
 
     public string[] options;
 
-    public Question(string questionText, string answer, int value, Category category, int level, string[] options) {
+    public Question(string questionText, string answer, int value, int category, int level, string[] options) {
         this.text = questionText;
         this.answer = answer;
         this.value = value;
@@ -27,7 +29,7 @@ public class Question {
     }
 
     public override string ToString() {
-        return "Pregunta: " + text + ", Respuesta: " + answer + ", Valor: " + value + ", Categoría: " + category.ToString();
+        return "Pregunta: " + text + ", Respuesta: " + answer + ", Valor: " + value + ", Categoría: " + category;
     }
 
     public void Show() {
@@ -50,12 +52,11 @@ public class Question {
         TextAsset textAsset = (TextAsset) Resources.Load("preguntas");
 
         CSVReader.LoadFromString(textAsset.text, delegate(int index, List<string> line) {
-            Question q = new Question(line[3], line[5], int.Parse(line[2]), (Category)int.Parse(line[0]) - 1, int.Parse(line[1]), line[4].Split(';').Length > 1 ? line[4].Split(';') : new string[0]);
+            Question q = new Question(line[3], line[5], int.Parse(line[2]), int.Parse(line[1]), int.Parse(line[0]), line[4].Split(';').Length > 1 ? line[4].Split(';') : new string[0]);
             //Debug.Log(q);
             questions.Add(q);
         });
         return questions.ToArray();
     }
 
-    public enum Category { Anatomy, Category2, Category3, Category4, Category5, Category6 }
 }

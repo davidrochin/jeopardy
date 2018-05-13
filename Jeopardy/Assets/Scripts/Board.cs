@@ -19,22 +19,32 @@ public class Board : MonoBehaviour {
     public GameObject[,] cells;
     public QuestionCollection questionCollection;
 
-	void Awake () {
+    string[,] categories = {
+        { "Cultura general", "Anatomía I-II", "Bioquímica I-II", "Histología", "Embriología" },
+        { "Cultura general", "Fisiología I-II", "Propedeutica I-II", "Microbiología", "Biología Molecular" },
+        { "Cultura general", "Hematología", "Farmacología I-II", "Gastroenterología", "Infectología" },
+        { "Cultura general", "Cardiología", "Urología", "Neurología", "Oncología" }
+    };
+
+    void Awake () {
+
+        //Leer preguntas del CSV
+        questionCollection = new QuestionCollection(Question.FromCSV());
+
         Build();
 	}
 
-    public void Populate(Question[] questions, string[] categories) {
+    public void Populate(int level) {
 
-        //Iniciar la coleccion de preguntas
-        questionCollection = new QuestionCollection(questions);
+        string[] levelCategories = GetLevelCategories(level);
 
         //Popular los encabezados
         for (int x = 0; x < cols; x++) {
             Cell cell = cells[x, 0].GetComponent<Cell>();
             cell.type = Cell.Type.Header;
-            cell.textMesh.text = categories[x];
+            cell.textMesh.text = levelCategories[x];
             //cell.textMesh.font = Resources.Load("Fonts & Materials/LiberationSans SDF") as TMP_FontAsset;
-            cell.textMesh.font = Resources.Load("Fonts & Materials/Impact SDF") as TMP_FontAsset;
+            cell.textMesh.font = Resources.Load("Fonts & Materials/OpenSans-Bold SDF") as TMP_FontAsset;
             cell.textMesh.color = Color.white;
             cell.textMesh.fontSizeMax = 4f;
             //cell.textMesh.enableAutoSizing = false;
@@ -45,9 +55,35 @@ public class Board : MonoBehaviour {
         //Popular las celdas de preguntas
         for (int x = 0; x < cols; x++) {
             for (int y = 1; y < rows; y++) {
-                Question question = questionCollection.RandomWithValueAndCategory(y * 200, (Question.Category) x);
-                cells[x, y].GetComponent<Cell>().SetQuestion(question);
+                Question[] questions = questionCollection.GetAllWith(y * 200, level, x + 1);
+                cells[x, y].GetComponent<Cell>().SetQuestions(questions);
                 //Debug.Log(question);
+            }
+        }
+    }
+
+    public void PopulateRemaining(int level) {
+
+        string[] levelCategories = GetLevelCategories(level);
+
+        //Cambiar los encabezados
+        for (int x = 0; x < cols; x++) {
+            Cell cell = cells[x, 0].GetComponent<Cell>();
+            cell.textMesh.text = levelCategories[x];
+        }
+
+        //Repopular las celdas que quedan de preguntas
+        for (int x = 0; x < cols; x++) {
+            for (int y = 1; y < rows; y++) {
+
+                //Si a la celda le quedan preguntas activas
+                if(cells[x, y].GetComponent<Cell>().HasActiveQuestions()) {
+                    Cell cell = cells[x, y].GetComponent<Cell>();
+                    //Question[] questions = questionCollection.GetAllWith(y * 200, level, x + 1);
+                    Question[] questions = questionCollection.GetNumberWith(y * 200, level, x + 1, cell.GetActiveQuestions().Length);
+                    cell.SetQuestions(questions);
+                }
+
             }
         }
     }
@@ -90,6 +126,14 @@ public class Board : MonoBehaviour {
                 cells[x, y] = cell;
             }
         }
+    }
+
+    string[] GetLevelCategories(int level) {
+        List<string> results = new List<string>();
+        for (int c = 0; c < categories.GetLength(1); c++) {
+            results.Add(categories[level - 1, c]);
+        }
+        return results.ToArray();
     }
 
     private void OnDrawGizmos() {

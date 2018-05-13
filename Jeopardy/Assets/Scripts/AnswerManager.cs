@@ -26,9 +26,9 @@ public class AnswerManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.O) && question.options.Length > 1) {
             GameObject textObject = transform.Find("question_text").gameObject;
 
-            string optionsText = question.options[0];
+            string optionsText = "-" + question.options[0];
             for (int i = 1; i < question.options.Length; i++) {
-                optionsText += "\n" + question.options[i];
+                optionsText += "\n-" + question.options[i];
             }
             textObject.GetComponent<Text>().text = optionsText;
             GetComponent<Image>().color = new Color32(61, 168, 34, 255);
@@ -46,6 +46,7 @@ public class AnswerManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.C)) {
             PlayManager playManager = FindObjectOfType<PlayManager>();
             playManager.teamInTurn.score += question.value;
+            question.active = false;
             answered = true;
         }
 
@@ -53,15 +54,16 @@ public class AnswerManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.I)) {
             PlayManager playManager = FindObjectOfType<PlayManager>();
             playManager.teamInTurn.score -= question.value;
+            question.active = false;
             answered = true;
         }
 
         if (answered) {
             PlayManager playManager = FindObjectOfType<PlayManager>();
 
-            //Buscar la celda con la pregunta y desactivarla
+            //Analizar las celdas. Si se encuentra una sin preguntas activas, desactivar toda la celda
             foreach (Cell cell in FindObjectsOfType<Cell>()) {
-                if(cell.question == question) { cell.SetActive(false); break; }
+                if(cell.HasActiveQuestions() == false) { cell.SetActive(false); }
             }
 
             playManager.FinishTurn();
