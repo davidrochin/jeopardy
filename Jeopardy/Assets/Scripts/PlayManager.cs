@@ -23,16 +23,9 @@ public class PlayManager : MonoBehaviour {
 
     public int level = 1;
 
-    public float initTime = 1200;
-    public float timeLeft = 1200;
-
     //Eventos
     public event Action OnFinishTurn;
     public event Action OnGameStart;
-    public event Action OnTimeFinish;
-
-    public bool timePaused = true;
-    public bool timeOver = false;
 
     void Awake () {
 
@@ -52,16 +45,12 @@ public class PlayManager : MonoBehaviour {
     }
 
     void Start() {
+
         //Popular el tablero con las preguntas
         board.Populate(1);
 
         if(OnGameStart != null) OnGameStart();
 
-        //Establecer que el temporizador se reinicie si se cambia la configuracion
-        ConfigPanel.OnConfigUpdate += delegate () {
-            timeLeft = initTime;
-            timePaused = true;
-        };
     }
 
     private void Update() {
@@ -72,27 +61,18 @@ public class PlayManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Keypad4)) { teamA.score -= 200; }
         if (Input.GetKeyDown(KeyCode.Keypad5)) { teamB.score -= 200; }*/
 
-        //Pausar el contador de tiempo si se presiona la tecla T
-        if (Input.GetKeyDown(KeyCode.T)) {
-            timePaused = !timePaused;
-        }
-
         //Escuchar la tecla ESC para abrir el panel de configuración
         if (Input.GetKeyDown(KeyCode.Escape) && FindObjectOfType<QuestionPanel>() == null && FindObjectOfType<QuestionSelector>() == null) {
             ConfigPanel.Show();
         }
 
-        //Restarle al contador de tiempo
-        if (!timePaused) {
-            timeLeft -= Time.deltaTime;
-            timeLeft = Mathf.Clamp(timeLeft, 0f, float.MaxValue);
-        }
-
-        //Si se acaba el tiempo, mostrar mensaje
-        if (timeLeft <= 0f && OnTimeFinish != null) OnTimeFinish();
-        if (timeLeft <= 0f && !timeOver) {
-            GameMessage.Show("Se acabó el tiempo!");
-            timeOver = true;
+        //Version de prueba
+        if (isDemo) {
+            demoTimeLeft -= Time.deltaTime;
+            if(demoTimeLeft <= 0f) {
+                isDemo = false;
+                StartCoroutine(ShowDemoOverMessage());
+            }
         }
 
     }
@@ -106,6 +86,20 @@ public class PlayManager : MonoBehaviour {
         /*GUILayout.Label("[Turno] " + teamInTurn.name);
         GUILayout.Label(teamA.name + " - " + teamA.score);
         GUILayout.Label(teamB.name + " - " + teamB.score);*/
+        //GUILayout.Label("Periodo de prueba, se cerrará despues de un tiempo");
+        if (isDemo) {
+            string demoTimeString = "" + ((int)demoTimeLeft / 60) + ":" + (((int)demoTimeLeft % 60) <= 9 ? "0" : "") + ((int)demoTimeLeft % 60);
+            GUI.Box(new Rect(new Vector2(Screen.width / 2f - 350f / 2f, Screen.height - 25f), new Vector2(350f, 25f)), "Versión de demostración, se cerrará despues de " + demoTimeString);
+        }
+    }
+
+    bool isDemo = true;
+    float demoTimeLeft = 300f;
+
+    IEnumerator ShowDemoOverMessage() {
+        GameMessage.Show("Se acabó el periodo de demostración");
+        yield return new WaitForSecondsRealtime(3f);
+        Application.Quit();
     }
 
     public delegate void Action();

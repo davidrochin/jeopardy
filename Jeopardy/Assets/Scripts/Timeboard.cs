@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Timeboard : MonoBehaviour {
 
-    Text timeText;
+    /*Text timeText;
 
     private void Start() {
         timeText = transform.Find("time").GetComponent<Text>();
@@ -19,5 +19,5 @@ public class Timeboard : MonoBehaviour {
 
     void TogglePause() {
         PlayManager.instance.timePaused = !PlayManager.instance.timePaused;
-    }
+    }*/
 }

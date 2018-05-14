@@ -41,12 +41,6 @@ public class Cell : MonoBehaviour {
         QuestionPanel questionPanel = FindObjectOfType<QuestionPanel>();
         if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false && cellActive && questionPanel == null) {
 
-            //Si el contador no está corriendo, avisar y no abrir nada
-            if (PlayManager.instance.timePaused) {
-                QuickMessage.Show("El contador no está corriendo");
-                return;
-            }
-
             if(GetActiveQuestions().Length > 0) {
 
                 //Si solo queda una pregunta activa, abrirla directamente en lugar de abrir el selector
