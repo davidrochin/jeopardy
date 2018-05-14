@@ -20,6 +20,7 @@ public class AnswerManager : MonoBehaviour {
             GameObject textObject = transform.Find("question_text").gameObject;
             textObject.GetComponent<Text>().text = question.answer;
             GetComponent<Image>().color = new Color32(165, 28, 28, 255);
+            transform.Find("options_notice").gameObject.SetActive(false);
         }
 
         //Si se presiona la tecla O, mostrar las opciones
@@ -32,6 +33,8 @@ public class AnswerManager : MonoBehaviour {
             }
             textObject.GetComponent<Text>().text = optionsText;
             GetComponent<Image>().color = new Color32(61, 168, 34, 255);
+
+            transform.Find("options_notice").gameObject.SetActive(false);
         }
 
         //Si se presiona la tecla P, volver a mostrar la pregunta

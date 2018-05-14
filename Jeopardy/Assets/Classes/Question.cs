@@ -41,6 +41,11 @@ public class Question {
 
         panel.transform.Find("question_text").GetComponent<Text>().text = text;
 
+        //Si no hay opciones, ocultar el aviso
+        if (options == null || options.Length <= 1) {
+            panel.transform.Find("options_notice").gameObject.SetActive(false);
+        } 
+
         //Agregar el componente que muestra la respuesta
         AnswerManager answerShower = panel.AddComponent<AnswerManager>();
         answerShower.question = this;
