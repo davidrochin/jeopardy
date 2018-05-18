@@ -71,6 +71,9 @@ public class ConfigPanel : MonoBehaviour {
             //Repopular las celdas que quedan con las preguntas del nuevo nivel
             FindObjectOfType<Board>().PopulateRemaining(PlayManager.instance.level);
 
+            //Resetear el Score
+            PlayManager.instance.ResetScore();
+
             Debug.Log("Se aplicó la configuración: " + PlayManager.instance.teamA.name + ", " + PlayManager.instance.teamB.name + ", nivel " + PlayManager.instance.level);
             if(OnConfigUpdate != null) OnConfigUpdate();
             Close();

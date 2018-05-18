@@ -28,7 +28,7 @@ public class QuestionSelector : MonoBehaviour {
 
             //Agregar la pregunta al selector solo si está activa
             if (question.active) {
-                GameObject item = QuestionSelectorItem.Create(question, selector.transform);
+                GameObject item = QuestionSelectorItem.Create(question, selector.transform, "Pregunta " + (count + 1));
                 item.GetComponent<Image>().color = colors[count];
             }
             count++;

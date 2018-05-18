@@ -82,6 +82,11 @@ public class PlayManager : MonoBehaviour {
         if(OnFinishTurn != null) OnFinishTurn();
     }
 
+    public void ResetScore() {
+        teamA.score = 0;
+        teamB.score = 0;
+    }
+
     private void OnGUI() {
         /*GUILayout.Label("[Turno] " + teamInTurn.name);
         GUILayout.Label(teamA.name + " - " + teamA.score);

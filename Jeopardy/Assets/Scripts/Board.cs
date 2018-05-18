@@ -30,6 +30,7 @@ public class Board : MonoBehaviour {
 
         //Leer preguntas del CSV
         questionCollection = new QuestionCollection(Question.FromCSV());
+        Debug.Log("Se terminaron de parsear las preguntas.");
 
         Build();
 	}
@@ -79,11 +80,14 @@ public class Board : MonoBehaviour {
                 //Si a la celda le quedan preguntas activas
                 if(cells[x, y].GetComponent<Cell>().HasActiveQuestions()) {
                     Cell cell = cells[x, y].GetComponent<Cell>();
-                    //Question[] questions = questionCollection.GetAllWith(y * 200, level, x + 1);
-                    Question[] questions = questionCollection.GetNumberWith(y * 200, level, x + 1, cell.GetActiveQuestions().Length);
-                    cell.SetQuestions(questions);
-                }
+                    Question[] newQuestions = questionCollection.GetNumberWith(y * 200, level, x + 1, 5);
 
+                    for (int i = 0; i < cell.questions.Length; i++) {
+                        if (cell.questions[i].active) {
+                            cell.questions[i] = newQuestions[i];
+                        }
+                    }
+                }
             }
         }
     }

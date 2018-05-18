@@ -53,24 +53,13 @@ public class Cell : MonoBehaviour {
         }
     }
 
-    private void OnMouseOver() {
-
-        if(type == Type.Question && EventSystem.current.IsPointerOverGameObject() == false) {
-
-            //Si le hacen clic derecho a la celda
-            if (Input.GetMouseButtonDown(1)) {
-                if (cellActive) {
-                    SetActive(false);
-                } else {
-                    SetActive(true);
-                }
-            }
-        }
-    }
-
     public void SetQuestions(Question[] questions) {
         this.questions = questions;
         textMesh.text = "" + this.questions[0].value;
+    }
+
+    public Question[] GetQuestions() {
+        return questions;
     }
 
     public void SetActive(bool active) {
