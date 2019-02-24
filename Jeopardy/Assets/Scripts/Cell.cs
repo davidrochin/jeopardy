@@ -31,7 +31,7 @@ public class Cell : MonoBehaviour {
         textMesh.margin = new Vector4(0.1f, 0.1f, 0.1f, 0.1f);
         textMesh.color = new Color32(255, 183, 73, 255);
         textMesh.font = Resources.Load("Fonts & Materials/Oswald Bold SDF") as TMP_FontAsset;
-        textMesh.fontMaterial = Resources.Load("Fonts & Materials/Oswald Bold SDF - Drop Shadow") as Material;
+        //textMesh.fontMaterial = Resources.Load("Fonts & Materials/Oswald Bold SDF - Drop Shadow") as Material;
 
         //Agregarle un collider para poder detectar clicks
         collider = gameObject.AddComponent<BoxCollider2D>();
